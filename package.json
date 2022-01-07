@@ -1,0 +1,13 @@
+{
+  "name": "cadastro-pacientes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "serverless-offline": "^8.3.1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1050.0",
+    "uuid": "^8.3.2"
+  }
+}

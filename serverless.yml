@@ -1,0 +1,81 @@
+
+service: cadastro-pacientes
+
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: dev
+  region: sa-east-1
+  environment:
+    PACIENTES_TABLE: 'PACIENTES-${opt:stage, self:provider.stage}'
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamoDB:Query
+        - dynamoDB:Scan
+        - dynamoDB:PutItem
+        - dynamoDB:DeleteItem
+        - dynamoDB:CreateItem
+        - dynamoDB:GetItem
+        - dynamoDB:UpdateItem
+      Resource: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.PACIENTES_TABLE}'
+
+plugins:
+  - serverless-offline
+
+
+functions:
+  listarPacientes:
+    handler: handler.listarPacientes
+    events:
+      - http:
+          path: pacientes
+          method: get
+
+
+  obterPaciente:
+    handler: handler.obterPaciente
+    events:
+      - http:
+          path: pacientes/{pacienteId}
+          method: get
+
+  cadastrarPaciente:
+    handler: handler.cadastrarPaciente
+    events:
+      - http:
+          path: pacientes
+          method: post
+
+  atualizarPaciente:
+    handler: handler.atualizarPaciente
+    events:
+      - http:
+          path: pacientes/{pacienteId}
+          method: put
+  
+  removerPaciente:
+    handler: handler.removerPaciente
+    events:
+      - http:
+          path: pacientes/{pacienteId}
+          method: delete
+
+resources:
+    Resources:
+      PacientesTable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          TableName: ${self:provider.environment.PACIENTES_TABLE}
+          AttributeDefinitions:
+            - AttributeName: paciente_id
+              AttributeType: S
+          KeySchema:
+            - AttributeName: paciente_id
+              KeyType: HASH
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1

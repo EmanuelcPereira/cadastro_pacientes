@@ -1,0 +1,1 @@
+Serverless API de cadastro de pacientes desenvolvida como parte dos estudos de Lambda Function da AWS.
